@@ -1,4 +1,8 @@
 #  SQL AI Agent  
+**Live Demo:**  
+👉 https://sql-agent-1-te6s.onrender.com/
+<img width="918" height="426" alt="SQL-AGENT" src="https://github.com/user-attachments/assets/59506390-c936-4e24-ac27-a98e20c63104" />
+
 An AI-powered SQL assistant that converts natural language questions into accurate PostgreSQL 16 SELECT queries.
 
 This project allows users to ask questions about customer demographics and purchase behavior.  
