@@ -1,0 +1,7 @@
+venv/
+dsi-gen-ai
+.env
+__pycache__/
+*.pyc
+.vscode/
+.streamlit/
