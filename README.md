@@ -48,50 +48,7 @@ customer_details.customer_id = transactions.customer_id
 
 ---
 
-##  Agent Configuration
-
-The system uses a detailed system prompt defining:
-
----
-
- ## Requirements
-
-Main libraries:
-
-Flask
-
-SQLAlchemy
-
-Psycopg2
-
-LangChain + langchain-openai
-
-python-dotenv
-
-gunicorn
-
-Jinja2
-Full list inside requirements.txt.
-📁 Folder Structure
-SQL-Agent/
-│
-├── agent/
-│   ├── config.py
-│   ├── sql_agent_01.py
-│   ├── sql-agent-system-prompt.txt
-│   └── __init__.py
-│
-├── static/
-│   └── style.css
-│
-├── templates/
-│   └── index.html
-│
-├── app.py
-├── .gitignore
-├── requirements.txt
-└── README.md
- Example Question
+ ## Example Question
 
 User:
 
