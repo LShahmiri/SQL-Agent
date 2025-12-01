@@ -52,50 +52,9 @@ customer_details.customer_id = transactions.customer_id
 
 The system uses a detailed system prompt defining:
 
-### ✔ SQL Rules
-- SELECT only  
-- Use LIMIT 100 when returning raw tables  
-- Always schema-qualify, e.g.:  
-  `grocery_db.customer_details`  
-- Avoid double-counting  
-- Use DISTINCT for customers & transactions  
-- Round monetary outputs  
-- Handle ambiguous questions with clarifying questions  
-- Date window: 2020-04-01 to 2020-09-30  
-
 ---
 
-##  Web App (Flask)
-
-The Flask interface:
-
-```python
-@app.route("/", methods=["GET", "POST"])
-def home():
-    answer = None
-    if request.method == "POST":
-        question = request.form.get("question")
-        if question:
-            result = agent.invoke({"messages": [{"role": "user", "content": question}]})
-            answer = result["messages"][-1].content
-    return render_template("index.html", answer=answer)
- Environment Variables
-
-Set these in Render → Environment:
-OPENAI_API_KEY=...
-LANGSMITH_API_KEY=...
-LANGSMITH_PROJECT=ABC_Grocery_SQL_Agent
-LANGSMITH_ENDPOINT=https://api.smith.langchain.com
-LANGSMITH_TRACING=true
-
-POSTGRES_HOST=...
-POSTGRES_PORT=5432
-POSTGRES_DBNAME=data_science_infinity
-POSTGRES_USER=student
-POSTGRES_PASSWORD=xxxx
-.env is kept private using .gitignore.
-
- Requirements
+ ## Requirements
 
 Main libraries:
 
@@ -138,14 +97,6 @@ User:
 
 "Which gender lives furthest from the store on average?"
 
-Generated SQL:
-
-select
-  gender,
-  avg(distance_from_store) as avg_distance
-from grocery_db.customer_details
-group by gender
-order by avg_distance desc;
 AI Response:
 
 “Female customers live the furthest on average.”
