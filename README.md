@@ -1,4 +1,4 @@
-# 🧠 SQL AI Agent  
+#  SQL AI Agent  
 An AI-powered SQL assistant that converts natural language questions into accurate PostgreSQL 16 SELECT queries.
 
 This project allows users to ask questions about customer demographics and purchase behavior.  
@@ -6,7 +6,7 @@ The system automatically generates SQL queries and returns clear summaries using
 
 ---
 
-## 🚀 Features
+##  Features
 - Natural language → PostgreSQL SELECT queries  
 - Strict read-only queries (no INSERT/UPDATE/DELETE)  
 - Supports joins, aggregations, grouping, and date filtering  
@@ -17,7 +17,7 @@ The system automatically generates SQL queries and returns clear summaries using
 
 ---
 
-## 🗄️ Database Schema
+##  Database Schema
 
 ### **1. grocery_db.customer_details**
 
@@ -43,12 +43,12 @@ The system automatically generates SQL queries and returns clear summaries using
 
 ---
 
-### 🔗 Join Relationship
+###  Join Relationship
 customer_details.customer_id = transactions.customer_id
 
 ---
 
-## 🧠 Agent Configuration
+##  Agent Configuration
 
 The system uses a detailed system prompt defining:
 
@@ -65,7 +65,7 @@ The system uses a detailed system prompt defining:
 
 ---
 
-## 🖥️ Web App (Flask)
+##  Web App (Flask)
 
 The Flask interface:
 
@@ -79,7 +79,7 @@ def home():
             result = agent.invoke({"messages": [{"role": "user", "content": question}]})
             answer = result["messages"][-1].content
     return render_template("index.html", answer=answer)
-🔧 Environment Variables
+ Environment Variables
 
 Set these in Render → Environment:
 OPENAI_API_KEY=...
@@ -95,7 +95,7 @@ POSTGRES_USER=student
 POSTGRES_PASSWORD=xxxx
 .env is kept private using .gitignore.
 
-📦 Requirements
+ Requirements
 
 Main libraries:
 
@@ -132,7 +132,7 @@ SQL-Agent/
 ├── .gitignore
 ├── requirements.txt
 └── README.md
-🧪 Example Question
+ Example Question
 
 User:
 
