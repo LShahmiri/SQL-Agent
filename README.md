@@ -1,99 +1,75 @@
-SQL AI Agent
+# 🧠 SQL AI Agent  
+An AI-powered SQL assistant that converts natural language questions into accurate PostgreSQL 16 SELECT queries.
 
-An AI-powered SQL assistant for querying PostgreSQL databases using natural language.
+This project allows users to ask questions about customer demographics and purchase behavior.  
+The system automatically generates SQL queries and returns clear summaries using OpenAI + LangChain.
 
-This project allows users to ask questions about customers and transactions, and the system automatically converts the question into a PostgreSQL 16 SELECT query and returns a clear, natural-language answer.
+---
 
-The agent is built using LangChain, OpenAI, SQLAlchemy, Flask, and Render for deployment.
+## 🚀 Features
+- Natural language → PostgreSQL SELECT queries  
+- Strict read-only queries (no INSERT/UPDATE/DELETE)  
+- Supports joins, aggregations, grouping, and date filtering  
+- Smart handling of ambiguous questions  
+- Flask web interface  
+- Hosted on Render  
+- Uses LangChain SQL toolkit + GPT-4.1 reasoning
 
-Features
+---
 
-Convert natural-language questions into accurate PostgreSQL SELECT queries
+## 🗄️ Database Schema
 
-Strict read-only querying (no INSERT/UPDATE/DELETE)
+### **1. grocery_db.customer_details**
 
-Automatic reasoning using a custom LangChain SQL Agent
+| Column              | Type           | Description |
+|--------------------|---------------|-------------|
+| customer_id        | INT           | Unique customer ID |
+| distance_from_store| NUMERIC(10,2) | Miles from store |
+| gender             | VARCHAR(2)    | 'M', 'F', or NULL |
+| credit_score       | NUMERIC(3,2)  | Credit score (0.00–1.00) |
 
-Flask web interface for user interaction
+---
 
-Real-time chat interface
+### **2. grocery_db.transactions**
 
-Render-hosted deployment
+| Column            | Type            | Description |
+|------------------|------------------|-------------|
+| customer_id      | INT              |
+| transaction_id   | INT              |
+| transaction_date | DATE             |
+| product_area_id  | INT (1–5)        |
+| num_items        | INT              |
+| sales_cost       | NUMERIC(10,2)    |
 
-Includes schema-aware reasoning (tables, joins, data windows, aggregation rules)
+---
 
- Database Schema
-1. grocery_db.customer_details
-
-Stores one row per unique customer.
-
-Column	Type	Description
-customer_id	INT	Unique ID
-distance_from_store	NUMERIC(10,2)	Miles from store
-gender	VARCHAR(2)	'M', 'F', or NULL
-credit_score	NUMERIC(3,2)	Credit score (0.00–1.00)
-2. grocery_db.transactions
-
-Stores transaction-level item and cost details.
-
-Column	Type	Description
-customer_id	INT	
-transaction_id	INT	
-transaction_date	DATE	
-product_area_id	INT (1–5)	
-num_items	INT	
-sales_cost	NUMERIC(10,2)	
-Join Relationship
+### 🔗 Join Relationship
 customer_details.customer_id = transactions.customer_id
 
-SQL Agent Behavior
+---
 
-The system uses a detailed system prompt that defines:
+## 🧠 Agent Configuration
 
-✔ Query Rules
+The system uses a detailed system prompt defining:
 
-SELECT-only
+### ✔ SQL Rules
+- SELECT only  
+- Use LIMIT 100 when returning raw tables  
+- Always schema-qualify, e.g.:  
+  `grocery_db.customer_details`  
+- Avoid double-counting  
+- Use DISTINCT for customers & transactions  
+- Round monetary outputs  
+- Handle ambiguous questions with clarifying questions  
+- Date window: 2020-04-01 to 2020-09-30  
 
-Avoid double counting
+---
 
-Schema-qualified table names
+## 🖥️ Web App (Flask)
 
-Use DISTINCT counts for customers & transactions
+The Flask interface:
 
-Round numerical outputs for readability
-
-Handle ambiguous questions with clarifying prompts
-
-Respect data availability window (2020-04-01 → 2020-09-30)
-
-✔ Tools
-
-LangChain SQLDatabaseToolkit
-
-OpenAI GPT-4.1 reasoning engine
-
-✔ Example Questions
-
-“Which gender spends more?”
-
-“How many items were bought?”
-
-“What is the average credit score by gender?”
-
- Web Interface (Flask)
-
-The web app allows users to:
-
-Type a question
-
-Submit via POST
-
-Receive the SQL-generated answer
-
-View a modern dark/light UI
-
-Main route (app.py):
-
+```python
 @app.route("/", methods=["GET", "POST"])
 def home():
     answer = None
@@ -103,13 +79,13 @@ def home():
             result = agent.invoke({"messages": [{"role": "user", "content": question}]})
             answer = result["messages"][-1].content
     return render_template("index.html", answer=answer)
+🔧 Environment Variables
 
-  Environment Variables
-
-Stored securely in Render → Environment → Edit:
-
+Set these in Render → Environment:
 OPENAI_API_KEY=...
 LANGSMITH_API_KEY=...
+LANGSMITH_PROJECT=ABC_Grocery_SQL_Agent
+LANGSMITH_ENDPOINT=https://api.smith.langchain.com
 LANGSMITH_TRACING=true
 
 POSTGRES_HOST=...
@@ -117,43 +93,27 @@ POSTGRES_PORT=5432
 POSTGRES_DBNAME=data_science_infinity
 POSTGRES_USER=student
 POSTGRES_PASSWORD=xxxx
+.env is kept private using .gitignore.
 
+📦 Requirements
 
-.env file is ignored in GitHub for security (via .gitignore).
-
-🚀 Deployment (Render)
-Build Command
-pip install -r requirements.txt
-
-Start Command
-gunicorn app:app
-
-
-The app automatically loads environment variables from Render and connects to PostgreSQL with SSL.
-
-  Requirements
-
-Main dependencies used:
+Main libraries:
 
 Flask
 
 SQLAlchemy
 
-LangChain
-
-LangChain OpenAI
-
 Psycopg2
+
+LangChain + langchain-openai
 
 python-dotenv
 
-Gunicorn
+gunicorn
 
 Jinja2
-
-(Full list in requirements.txt)
-
-  Folder Structure
+Full list inside requirements.txt.
+📁 Folder Structure
 SQL-Agent/
 │
 ├── agent/
@@ -162,22 +122,21 @@ SQL-Agent/
 │   ├── sql-agent-system-prompt.txt
 │   └── __init__.py
 │
+├── static/
+│   └── style.css
+│
 ├── templates/
 │   └── index.html
 │
-├── static/
-│   ├── style.css
-│
 ├── app.py
-├── requirements.txt
 ├── .gitignore
-└── README.md   ← (this file)
-
- Example Query
+├── requirements.txt
+└── README.md
+🧪 Example Question
 
 User:
 
-“On average, which gender lives furthest from the store?”
+"Which gender lives furthest from the store on average?"
 
 Generated SQL:
 
@@ -187,8 +146,6 @@ select
 from grocery_db.customer_details
 group by gender
 order by avg_distance desc;
-
-
 AI Response:
 
-“On average, female customers live the furthest from the store.”
+“Female customers live the furthest on average.”
